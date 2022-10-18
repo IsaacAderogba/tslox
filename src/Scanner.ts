@@ -90,9 +90,26 @@ export class Scanner {
         this.string();
         break;
       default:
-        this.lox.error(this.line, "Unexpected character.");
+        if (this.isDigit(c)) {
+          this.number();
+        } else {
+          this.lox.error(this.line, "Unexpected character.");
+        }
         break;
     }
+  }
+
+  private number(): void {
+    while (this.isDigit(this.peek())) this.advance();
+
+    if (this.peek() === "." && this.isDigit(this.peekNext())) {
+      this.advance();
+
+      while (this.isDigit(this.peek())) this.advance();
+    }
+
+    const value = parseFloat(this.source.substring(this.start, this.current));
+    this.addToken("NUMBER", value);
   }
 
   private string(): void {
@@ -123,6 +140,15 @@ export class Scanner {
   private peek(): string {
     if (this.isAtEnd()) return "\0";
     return this.source.charAt(this.current);
+  }
+
+  private peekNext(): string {
+    if (this.current + 1 >= this.source.length) return "\0";
+    return this.source.charAt(this.current + 1);
+  }
+
+  private isDigit(char: string): boolean {
+    return char >= "0" && char <= "9";
   }
 
   private isAtEnd(): boolean {
