@@ -59,7 +59,30 @@ export class Scanner {
       case "*":
         this.addToken("STAR");
         break;
+      case "!":
+        this.addToken(this.match("=") ? "BANG_EQUAL" : "BANG");
+        break;
+      case "=":
+        this.addToken(this.match("=") ? "EQUAL_EQUAL" : "EQUAL");
+        break;
+      case "<":
+        this.addToken(this.match("=") ? "LESS_EQUAL" : "LESS");
+        break;
+      case ">":
+        this.addToken(this.match("=") ? "GREATER_EQUAL" : "GREATER");
+        break;
+      default:
+        this.lox.error(this.line, "Unexpected character.");
+        break;
     }
+  }
+
+  private match(expected: string): boolean {
+    if (this.isAtEnd()) return false;
+    if (this.source.charAt(this.current) !== expected) return false;
+
+    this.current++;
+    return true;
   }
 
   private isAtEnd(): boolean {
