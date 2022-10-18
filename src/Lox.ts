@@ -1,8 +1,16 @@
 import readline from "readline";
 import fs from "fs";
 import { LoxApi } from "./LoxApi";
+import { Reporter } from "./Reporter";
 
 export class Lox implements LoxApi {
+  hadError = false;
+  reporter: Reporter;
+
+  constructor(reporter: Reporter) {
+    this.reporter = reporter;
+  }
+
   main(args: string[]): void {
     if (args.length > 1) {
       console.log("Usage: tslox [script]");
@@ -40,5 +48,14 @@ export class Lox implements LoxApi {
     for (const token of tokens) {
       console.log(token);
     }
+  }
+
+  error(line: number, message: string): void {
+    this.report(line, "", message);
+  }
+
+  report(line: number, where: string, message: string): void {
+    this.reporter.error("[line " + line + "] Error" + where + ": " + message);
+    this.hadError = true;
   }
 }
