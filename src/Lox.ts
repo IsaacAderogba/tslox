@@ -25,6 +25,8 @@ export class Lox implements LoxApi {
   private runFile(path: string): void {
     const source = fs.readFileSync(path, { encoding: "utf8" });
     this.run(source);
+
+    if (this.hadError) process.exit(65);
   }
 
   private runPrompt(): void {
@@ -37,6 +39,8 @@ export class Lox implements LoxApi {
     rl.prompt();
     rl.on("line", (line) => {
       this.run(line);
+      this.hadError = false;
+
       rl.prompt();
     });
   }
