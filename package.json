@@ -1,0 +1,32 @@
+{
+  "name": "tslox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/Lox.js",
+  "scripts": {
+    "test": "vitest",
+    "debug": "ts-node src/Lox.ts ./playground.lox",
+    "build": "tsup src/Lox.ts --format esm,cjs --dts --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IsaacAderogba/tslox.git"
+  },
+  "keywords": [],
+  "author": "Isaac Aderogba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IsaacAderogba/tslox/issues"
+  },
+  "homepage": "https://github.com/IsaacAderogba/tslox#readme",
+  "devDependencies": {
+    "@types/node": "^18.11.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1",
+    "tsup": "^6.3.0",
+    "typescript": "^4.8.4"
+  }
+}
