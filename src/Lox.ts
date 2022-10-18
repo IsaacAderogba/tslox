@@ -2,6 +2,7 @@ import readline from "readline";
 import fs from "fs";
 import { LoxApi } from "./LoxApi";
 import { Reporter } from "./Reporter";
+import { Scanner } from "./Scanner";
 
 export class Lox implements LoxApi {
   hadError = false;
