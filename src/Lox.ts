@@ -46,13 +46,13 @@ export class Lox implements LoxApi {
     });
   }
 
-  private run(source: string): void {
+  run(source: string): void {
     const scanner = new Scanner(this, source);
     const tokens = scanner.scanTokens();
 
-    for (const token of tokens) {
-      console.log(token);
-    }
+    // for (const token of tokens) {
+    //   console.log(token);
+    // }
   }
 
   error(line: number, message: string): void {

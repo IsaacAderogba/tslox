@@ -1,0 +1,4 @@
+var £ = ""
+
+-- stderr --
+[line 1] Error: Unexpected character.
