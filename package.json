@@ -5,7 +5,8 @@
   "main": "dist/Lox.js",
   "scripts": {
     "test": "vitest",
-    "debug": "ts-node src/Lox.ts ./playground.lox",
+    "debug": "ts-node src/main.ts ./playground.lox",
+    "repl": "ts-node src/main.ts",
     "build": "tsup src/Lox.ts --format esm,cjs --dts --minify"
   },
   "repository": {
