@@ -92,11 +92,19 @@ export class Scanner {
       default:
         if (this.isDigit(c)) {
           this.number();
+        } else if (this.isAlpha(c)) {
+          this.identifier();
         } else {
           this.lox.error(this.line, "Unexpected character.");
         }
         break;
     }
+  }
+
+  private identifier(): void {
+    while (this.isAlphaNumeric(this.peek())) this.advance();
+
+    this.addToken("IDENTIFIER");
   }
 
   private number(): void {
@@ -145,6 +153,14 @@ export class Scanner {
   private peekNext(): string {
     if (this.current + 1 >= this.source.length) return "\0";
     return this.source.charAt(this.current + 1);
+  }
+
+  private isAlpha(c: string): boolean {
+    return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c == "_";
+  }
+
+  private isAlphaNumeric(c: string): boolean {
+    return this.isAlpha(c) || this.isDigit(c);
   }
 
   private isDigit(char: string): boolean {
