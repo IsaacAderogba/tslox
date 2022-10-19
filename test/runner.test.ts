@@ -2,20 +2,7 @@ import path from "path";
 import fs from "fs";
 import { test, expect } from "vitest";
 import { Lox } from "../src/Lox";
-import { Reporter } from "../src/Reporter";
-
-class TestReporter implements Reporter {
-  stdout = "";
-  stderr = "";
-
-  log(message: string): void {
-    this.stdout += (this.stdout ? "\n" : "") + message;
-  }
-
-  error(message: string): void {
-    this.stderr += (this.stderr ? "\n" : "") + message;
-  }
-}
+import { TestReporter } from "./TestReporter";
 
 export function findFiles(dir: string, ext: string): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
