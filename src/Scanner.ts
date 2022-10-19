@@ -3,6 +3,25 @@ import { Literal, Token } from "./Token";
 import { TokenType } from "./TokenType";
 
 export class Scanner {
+  static keywords = new Map<string, TokenType>([
+    ["and", "AND"],
+    ["class", "CLASS"],
+    ["else", "ELSE"],
+    ["false", "FALSE"],
+    ["for", "FOR"],
+    ["fun", "FUN"],
+    ["if", "IF"],
+    ["nil", "NIL"],
+    ["or", "OR"],
+    ["print", "PRINT"],
+    ["return", "RETURN"],
+    ["super", "SUPER"],
+    ["this", "THIS"],
+    ["true", "TRUE"],
+    ["var", "VAR"],
+    ["while", "WHILE"],
+  ]);
+
   private lox: LoxApi;
   private source: string;
   private start = 0;
@@ -104,7 +123,8 @@ export class Scanner {
   private identifier(): void {
     while (this.isAlphaNumeric(this.peek())) this.advance();
 
-    this.addToken("IDENTIFIER");
+    const text = this.source.substring(this.start, this.current);
+    this.addToken(Scanner.keywords.get(text) || "IDENTIFIER");
   }
 
   private number(): void {
