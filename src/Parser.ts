@@ -1,13 +1,25 @@
 import { BinaryExpr, Expr, GroupingExpr, LiteralExpr, UnaryExpr } from "./Expr";
+import { LoxApi } from "./LoxApi";
 import { Token } from "./Token";
 import { TokenType } from "./TokenType";
 
+class ParseError extends Error {}
 export class Parser {
+  private lox: LoxApi;
   private tokens: Token[] = [];
   private current = 0;
 
-  constructor(tokens: Token[]) {
+  constructor(lox: LoxApi, tokens: Token[]) {
+    this.lox = lox;
     this.tokens = tokens;
+  }
+
+  parse(): Expr | null {
+    try {
+      return this.expression();
+    } catch (error) {
+      return null;
+    }
   }
 
   private expression(): Expr {
@@ -83,9 +95,11 @@ export class Parser {
 
     if (this.match("LEFT_PAREN")) {
       const expr = this.expression();
-      this.consume("RIGHT_PARENT", "Expect ')' after expression.");
+      this.consume("RIGHT_PAREN", "Expect ')' after expression.");
       return new GroupingExpr(expr);
     }
+
+    throw this.error(this.peek(), "Expect expression.");
   }
 
   private match(...types: TokenType[]): boolean {
@@ -97,6 +111,12 @@ export class Parser {
     }
 
     return false;
+  }
+
+  private consume(type: TokenType, message: string): Token {
+    if (this.check(type)) return this.advance();
+
+    throw this.error(this.peek(), message);
   }
 
   private check(type: TokenType): boolean {
@@ -119,5 +139,32 @@ export class Parser {
 
   private previous(): Token {
     return this.tokens[this.current - 1];
+  }
+
+  private error(token: Token, message: string): ParseError {
+    this.lox.error(token, message);
+    return new ParseError();
+  }
+
+  private synchronize(): void {
+    this.advance();
+
+    while (!this.isAtEnd()) {
+      if (this.previous().type === "SEMICOLON") return;
+
+      switch (this.peek().type) {
+        case "CLASS":
+        case "FUN":
+        case "VAR":
+        case "FOR":
+        case "IF":
+        case "WHILE":
+        case "PRINT":
+        case "RETURN":
+          return;
+      }
+
+      this.advance();
+    }
   }
 }

@@ -3,6 +3,7 @@ import fs from "fs";
 import { LoxApi } from "./LoxApi";
 import { Reporter } from "./Reporter";
 import { Scanner } from "./Scanner";
+import { Token } from "./Token";
 
 export class Lox implements LoxApi {
   hadError = false;
@@ -55,8 +56,14 @@ export class Lox implements LoxApi {
     // }
   }
 
-  error(line: number, message: string): void {
-    this.report(line, "", message);
+  error(input: number | Token, message: string): void {
+    if (typeof input === "number") {
+      this.report(input, "", message);
+    } else if (input.type === "EOF") {
+      this.report(input.line, " at end", message);
+    } else {
+      this.report(input.line, " at '" + input.lexeme + "'", message);
+    }
   }
 
   report(line: number, where: string, message: string): void {
