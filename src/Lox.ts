@@ -5,9 +5,13 @@ import { Reporter } from "./Reporter";
 import { Scanner } from "./Scanner";
 import { Token } from "./Token";
 import { Parser } from "./Parser";
+import { RuntimeError } from "./RuntimeError";
+import { Interpreter } from "./Interpreter";
 
 export class Lox implements LoxApi {
+  interpreter = new Interpreter(this);
   hadError = false;
+  hadRuntimeError = false;
   reporter: Reporter;
 
   constructor(reporter: Reporter) {
@@ -30,6 +34,7 @@ export class Lox implements LoxApi {
     this.run(source);
 
     if (this.hadError) process.exit(65);
+    if (this.hadRuntimeError) process.exit(70);
   }
 
   private runPrompt(): void {
@@ -55,12 +60,9 @@ export class Lox implements LoxApi {
 
     const parser = new Parser(this, tokens);
     const expression = parser.parse();
+    if (this.hadError || !expression) return;
 
-    if (this.hadError) return;
-
-    // for (const token of tokens) {
-    //   console.log(token);
-    // }
+    this.interpreter.interpret(expression);
   }
 
   error(input: number | Token, message: string): void {
@@ -71,6 +73,11 @@ export class Lox implements LoxApi {
     } else {
       this.report(input.line, " at '" + input.lexeme + "'", message);
     }
+  }
+
+  runtimeError(error: RuntimeError): void {
+    this.reporter.error(error.message + "\n[line " + error.token.line + "]");
+    this.hadRuntimeError = true;
   }
 
   report(line: number, where: string, message: string): void {
