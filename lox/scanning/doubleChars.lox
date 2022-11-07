@@ -1,1 +1,1 @@
-var value = true != false
+true != false
