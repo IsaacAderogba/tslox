@@ -11,7 +11,8 @@
     "prettier"
   ],
   "rules": {
-    "@typescript-eslint/explicit-function-return-type": 2
+    "@typescript-eslint/explicit-function-return-type": 2,
+    "@typescript-eslint/ban-types": 0
   },
   "env": {
     "browser": true,
