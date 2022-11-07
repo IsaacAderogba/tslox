@@ -6,10 +6,30 @@ import {
   LiteralExpr,
   UnaryExpr,
 } from "./Expr";
+import { LoxApi } from "./LoxApi";
 import { RuntimeError } from "./RuntimeError";
 import { LoxValue, Token } from "./Token";
 
 export class Interpreter implements ExprVisitor<LoxValue> {
+  private lox: LoxApi;
+
+  constructor(lox: LoxApi) {
+    this.lox = lox;
+  }
+
+  interpret(expression: Expr): void {
+    try {
+      const value = this.evaluate(expression);
+      console.log(this.stringify(value));
+    } catch (error) {
+      if (error instanceof RuntimeError) {
+        this.lox.runtimeError(error);
+      } else {
+        throw error;
+      }
+    }
+  }
+
   private evaluate(expr: Expr): LoxValue {
     return expr.accept(this);
   }
@@ -47,7 +67,10 @@ export class Interpreter implements ExprVisitor<LoxValue> {
           return left + right;
         }
 
-        break;
+        throw new RuntimeError(
+          expr.operator,
+          "Operands must be two numbers or two strings."
+        );
       case "SLASH":
         this.checkNumberOperands(expr.operator, left, right);
         return (left as number) / (right as number);
@@ -108,5 +131,19 @@ export class Interpreter implements ExprVisitor<LoxValue> {
     if (a === null) return false;
 
     return a === b;
+  }
+
+  private stringify(object: LoxValue): string {
+    if (object === null || object === undefined) return "nil";
+
+    if (typeof object === "number") {
+      let text = object.toString();
+      if (text.endsWith(".0")) {
+        text = text.substring(0, text.length - 2);
+      }
+      return text;
+    }
+
+    return object.toString();
   }
 }
