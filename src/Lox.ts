@@ -4,6 +4,7 @@ import { LoxApi } from "./LoxApi";
 import { Reporter } from "./Reporter";
 import { Scanner } from "./Scanner";
 import { Token } from "./Token";
+import { Parser } from "./Parser";
 
 export class Lox implements LoxApi {
   hadError = false;
@@ -50,6 +51,12 @@ export class Lox implements LoxApi {
   run(source: string): void {
     const scanner = new Scanner(this, source);
     const tokens = scanner.scanTokens();
+    if (this.hadError) return;
+
+    const parser = new Parser(this, tokens);
+    const expression = parser.parse();
+
+    if (this.hadError) return;
 
     // for (const token of tokens) {
     //   console.log(token);

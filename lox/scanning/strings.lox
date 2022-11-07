@@ -1,4 +1,3 @@
-var line = "string"
-var multi = "
+"string" + "
 string
 "
