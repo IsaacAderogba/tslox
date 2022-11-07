@@ -20,7 +20,6 @@ export class Interpreter implements ExprVisitor<LoxValue> {
   interpret(expression: Expr): void {
     try {
       const value = this.evaluate(expression);
-      console.log(this.stringify(value));
     } catch (error) {
       if (error instanceof RuntimeError) {
         this.lox.runtimeError(error);
