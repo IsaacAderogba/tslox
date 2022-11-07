@@ -1,4 +1,4 @@
-import { Literal, Token } from "./Token";
+import { LoxValue, Token } from "./Token";
 
 export class BinaryExpr {
   constructor(
@@ -21,7 +21,7 @@ export class GroupingExpr {
 }
 
 export class LiteralExpr {
-  constructor(readonly value: Literal) {}
+  constructor(readonly value: LoxValue) {}
 
   accept<T>(visitor: ExprVisitor<T>): T {
     return visitor.visitLiteralExpr(this);
